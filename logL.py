@@ -14,10 +14,7 @@ can handle this or reduce the ranges and/or stepsizes for the parameter arrays.
 
 from astropy.io import fits
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
-import glob
-import os
 from astropy.convolution import convolve, Gaussian1DKernel
 import argparse
 from scipy.optimize import curve_fit
@@ -190,9 +187,9 @@ def butterworth(x, order, freq, filt_type='highpass'):
 
 parser = argparse.ArgumentParser(description="Likelihood Mapping of High-resolution Spectra")
 parser.add_argument("-nights", nargs="*", help="MJD nights", type=str)
-parser.add_argument("-d", '--datapath', default="./examples/", help="path to data")
-parser.add_argument("-m", '--modelpath', default="./examples/", help="path to models")
-parser.add_argument("-o", '--outpath', default="./examples/", help="path for output")
+parser.add_argument("-d", '--datapath', default="./", help="path to data")
+parser.add_argument("-m", '--modelpath', default="./", help="path to models")
+parser.add_argument("-o", '--outpath', default="./", help="path for output")
 parser.add_argument("-ext", '--extension', default=".fits", help="output file name extension")
 args = parser.parse_args()
 
@@ -224,8 +221,8 @@ for night in nights:
 
 		# Read in data
 		spec = np.load(data_path+night+'_spectra.npy')[iters[night]-1] - 1.		# (orders, frames, pixels)
-		wave = np.load(data_path+night+'_wavelength.npy')						# (orders, frames, pixels)
-		phase = np.load(data_path+night+'_phase.npy')							# (frames)
+		wave = np.load(data_path+night+'_wavelength.npy')				# (orders, frames, pixels)
+		phase = np.load(data_path+night+'_phase.npy')					# (frames)
 		
 		# Only include phases below 0.41 and above 0.59, to avoid stellar Fe signal
 		p_ind = np.where((phase < 0.41) & (phase > -0.41))[0]
