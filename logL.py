@@ -223,12 +223,9 @@ for night in nights:
 	for v,vmr in enumerate(vmrs):
 
 		# Read in data
-		#spec = np.load(data_path+night+'_spectra.npy')[iters[night]-1] - 1.
-		#wave = np.load(data_path+night+'_wavelength.npy')
-		#phase = np.load(data_path+night+'_phase.npy')
-		spec = np.load(data_path+'ESPaDOnS_spectra_whitenoise_injection_vmr4_a2_C0.99_o28.7_Kp221.9_Vsys-6.5.npy') - 1.
-		wave = np.load(data_path+'ESPaDOnS_wavelength.npy')
-		phase = np.load(data_path+'ESPaDOnS_phase.npy')
+		spec = np.load(data_path+night+'_spectra.npy')[iters[night]-1] - 1.		# (orders, frames, pixels)
+		wave = np.load(data_path+night+'_wavelength.npy')						# (orders, frames, pixels)
+		phase = np.load(data_path+night+'_phase.npy')							# (frames)
 		
 		# Only include phases below 0.41 and above 0.59, to avoid stellar Fe signal
 		p_ind = np.where((phase < 0.41) & (phase > -0.41))[0]
@@ -242,7 +239,7 @@ for night in nights:
 		n_pix = spec.shape[2]
 		
 		# Get dayside model
-		hdu = fits.open(model_path+'model_wasp33b_FeI_logvmr%.1f.fits' % (vmr))
+		hdu = fits.open(model_path+'model_wasp33b_FeI_logvmr%.1f.fits' % (vmr))		# (wavelength, spectrum)
 		model = hdu[0].data
 		
 		# Interpolate model to wavelength grid with consistent resolution
