@@ -27,7 +27,7 @@ You can also specify:
 
 * ``-ext {extension}`` for the output file name extension (default is .fits)
 
-The output is a .fits file containing the full log-likelihood map for that set of observations. Fair warning, the file can be very large (> 10 GB) depending on your parameter ranges and stepsizes.
+The output is a .fits file containing the full log-likelihood map for that set of observations. Fair warning, the file can be pretty large (> 1 GB) depending on your parameter ranges and stepsizes.
 
 
 
