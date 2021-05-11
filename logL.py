@@ -140,7 +140,7 @@ def phasefold(Kps, vgrid, vsys, cmap, phase):
 
 def chi2(cmap, merr, serr, alpha, Kps, vgrid, vsys, phase):
 	"""
-	Calculates the log likelihood from the previously computed 
+	Calculates the chi squared from the previously computed 
 	cross-correlation map and other base terms, for a given set
 	of scaled line contrast values.
 	"""
@@ -295,7 +295,6 @@ for night in nights:
 				X2 = chi2(lnL_term3[i,j], lnL_term2[i,j], lnL_term1, alpha, Kps, vgrid, Vsys, phase)
 				lnL[v,i,j] += -N/2. * np.log(X2 / N)
 
-
 # Find highest likelihood values
 maximum = np.nanmax(lnL)
 maxes = np.where(lnL == maximum)
@@ -314,7 +313,6 @@ print 'off = %.1f' % (offset[oidx])
 print 'a = %.1f' % (alpha[aidx])
 print 'Kp = %.1f' % (Kps[kidx])
 print 'Vsys = %.1f' % (Vsys[vidx])
-
 
 # Write lnL to fits file
 hdu2 = fits.PrimaryHDU(lnL)
