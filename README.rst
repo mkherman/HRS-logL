@@ -3,6 +3,7 @@ HRS-logL
 
 **Log-likelihood calculation for high-resolution planetary spectra cross-correlated with atmospheric models.**
 
+*Note: This code was written in Python 2.7.*
 
 
 logL.py
