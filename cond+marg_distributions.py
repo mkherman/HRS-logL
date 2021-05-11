@@ -12,7 +12,6 @@ computing the parameter constraints.
 
 import numpy as np
 from astropy.io import fits
-import matplotlib.ticker as ticker
 from scipy.interpolate import interp1d
 
 
@@ -99,6 +98,3 @@ print 'VMR:  %.2f, -%.2f, +%.2f, %.2f' % (significance(vmrs, margf))
 print 'off:  %.2f, -%.2f, +%.2f, %.2f' % (significance(offset, margo))
 #print 'C:  %.2f, -%.2f, +%.2f, %.2f, %.2f' % (significance(contrast, margc))
 print 'C: > %.2f' % (lowerlim(contrast,margc))
-
-
-
