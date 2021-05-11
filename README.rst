@@ -8,7 +8,7 @@ HRS-logL
 logL.py
 --------------
 
-This code computes the full log-likelihood map for planetary emission spectra cross-correlated with atmospheric emission models. It was specifically written for CFHT ESPaDOnS observations of WASP-33b, cross-correlated with Fe I emission models.
+This code computes the full log-likelihood map for high-resolution planetary emission spectra cross-correlated with atmospheric emission models. It was specifically written for CFHT ESPaDOnS observations of WASP-33b, cross-correlated with Fe I emission models.
 
 To run this code:
 
