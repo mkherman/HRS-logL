@@ -215,26 +215,24 @@ iters = {'56550': 5, '56561': 4, '56904': 4, '56915': 6, '56966': 6}
 # Specify Butterworth filter cut-off frequency for each night
 bfreq = {'56550': 0.035, '56561': 0.04, '56904': 0.03, '56915': 0.025, '56966': 0.055}
 
-
 for night in nights:
-	for v,vmr in enumerate(vmrs):
+	# Read in data
+	spec = np.load(data_path+night+'_spectra.npy')[iters[night]-1] - 1.		# (orders, frames, pixels)
+	wave = np.load(data_path+night+'_wavelength.npy')				# (orders, frames, pixels)
+	phase = np.load(data_path+night+'_phase.npy')					# (frames)
+	
+	# Only include phases below 0.41 and above 0.59, to avoid stellar Fe signal
+	p_ind = np.where((phase < 0.41) & (phase > -0.41))[0]
+	phase = phase[p_ind]
+	spec = spec[:,p_ind,:]
+	wave = wave[:,p_ind,:]
+		
+	# Determine size of arrays
+	n_orders = spec.shape[0]
+	n_frames = spec.shape[1]
+	n_pix = spec.shape[2]
 
-		# Read in data
-		spec = np.load(data_path+night+'_spectra.npy')[iters[night]-1] - 1.		# (orders, frames, pixels)
-		wave = np.load(data_path+night+'_wavelength.npy')				# (orders, frames, pixels)
-		phase = np.load(data_path+night+'_phase.npy')					# (frames)
-		
-		# Only include phases below 0.41 and above 0.59, to avoid stellar Fe signal
-		p_ind = np.where((phase < 0.41) & (phase > -0.41))[0]
-		phase = phase[p_ind]
-		spec = spec[:,p_ind,:]
-		wave = wave[:,p_ind,:]
-		
-		# Determine size of arrays
-		n_orders = spec.shape[0]
-		n_frames = spec.shape[1]
-		n_pix = spec.shape[2]
-		
+	for v,vmr in enumerate(vmrs):
 		# Get dayside model
 		hdu = fits.open(model_path+'model_wasp33b_FeI_logvmr%.1f.fits' % (vmr))		# (wavelength, spectrum)
 		model = hdu[0].data
@@ -258,9 +256,6 @@ for night in nights:
 		cmap_osum = np.zeros((n_frames, len(vgrid)))
 		merr_osum = np.zeros((n_frames, len(vgrid)))
 		serr_osum = np.zeros((n_frames))
-		
-		# Compute brightness variation for given contrasts and offsets
-		variation = contrast_offset(phase, offset, contrast)
 
 		# Perform cross-correlation for orders redward of 600 nm, and sum together
 		for i,o in enumerate(np.arange(24,37)): 
@@ -284,6 +279,9 @@ for night in nights:
 			merr_osum +=  merr
 			serr_osum += serr
 
+		# Compute brightness variation for given contrasts and offsets
+		variation = contrast_offset(phase, offset, contrast)
+		
 		# Apply brightness variation to lnL terms
 		lnL_term1 = serr_osum
 		lnL_term2 = merr_osum[np.newaxis,np.newaxis,:,:] * variation[:,:,:,np.newaxis]**2
