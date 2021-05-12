@@ -29,9 +29,9 @@ def significance(param,margL):
 	snr_low, snr_up = x_med/(x_med-low1sig), x_med/(up1sig-x_med)
 	
 	if snr_low > snr_up:
-		return x_med, uncert_low, uncert_up, snr_low
-	else:
 		return x_med, uncert_low, uncert_up, snr_up
+	else:
+		return x_med, uncert_low, uncert_up, snr_low
 
 
 def lowerlim(param,margL):
