@@ -52,9 +52,19 @@ def remove_env(wave, spec, px):
 	return corrected
 
 
+def butterworth(x, order, freq, filt_type='highpass'):
+	"""
+	Applies a high-pass Butterworth filter, with a given order and 
+	cut-off frequency, to the given model.
+	"""
+	butterfilt = butter(order, freq, btype=filt_type, output='sos')
+	x_filtered = sosfiltfilt(butterfilt, x)
+	return x_filtered
+
+
 def wavegrid(wavemin,wavemax,res):
 	"""
-	Creates a wavelength array evenly spaced in resolution elements.
+	Creates a wavelength array evenly spaced in resolution.
 	"""
 	c=299792458.
 	dx=np.log(1.+1./res)
@@ -140,9 +150,9 @@ def phasefold(Kps, vgrid, vsys, cmap, phase):
 
 def chi2(cmap, merr, serr, alpha, Kps, vgrid, vsys, phase):
 	"""
-	Calculates the chi squared from the previously computed 
-	cross-correlation map and other base terms, for a given set
-	of scaled line contrast values.
+	Calculates the chi squared portion of the lnL from the 
+	previously computed cross-correlation map and other base 
+	terms, for a given set of scaled line contrast values.
 	"""
 	X2 = np.zeros((len(alpha), len(Kps), len(vsys)))	# (alpha, Kps, Vsys)
 
@@ -159,27 +169,17 @@ def chi2(cmap, merr, serr, alpha, Kps, vgrid, vsys, phase):
 	return X2
 
 
-def contrast_offset(phase, offset_deg, contrast):
+def brightvar(phase, offset_deg, contrast):
 	"""
 	Computes the brightness variation for a given set of day-night 
 	contrast and peak phase offset values over a given phase range.
 	"""
 	offset = offset_deg / 360.
-	# Equation: A_p = C * sin^2(pi*(phi+theta)) + (1 - C)
-	A_p = 1. - 	contrast[:,np.newaxis,np.newaxis] * \
-			np.cos(np.pi*(phase[np.newaxis,np.newaxis,:] - \
-					offset[np.newaxis,:,np.newaxis]))**2
+	# Equation: Ap = 1 - C * cos^2 (pi * (phi - theta))
+	A_p = 1. - contrast[:,np.newaxis,np.newaxis] * \
+		np.cos(np.pi*(phase[np.newaxis,np.newaxis,:] - \
+		offset[np.newaxis,:,np.newaxis]))**2
 	return A_p
-
-
-def butterworth(x, order, freq, filt_type='highpass'):
-	"""
-	Applies a high-pass Butterworth filter, with a given order and 
-	cut-off frequency, to the given model.
-	"""
-	butterfilt = butter(order, freq, btype=filt_type, output='sos')
-	x_filtered = sosfiltfilt(butterfilt, x)
-	return x_filtered
 
 
 ###############################################################################
@@ -280,7 +280,7 @@ for night in nights:
 			serr_osum += serr
 
 		# Compute brightness variation for given contrasts and offsets
-		variation = contrast_offset(phase, offset, contrast)
+		variation = brightvar(phase, offset, contrast)
 		
 		# Apply brightness variation to lnL terms
 		lnL_term1 = serr_osum
