@@ -210,10 +210,10 @@ contrast = np.arange(0.,1.1, 0.1)
 lnL = np.zeros((len(vmrs),len(contrast), len(offset), len(alpha), len(Kps), len(Vsys)))
 
 # Specify number of SYSREM iterations used on spectra for each MJD night
-iters = {'56550': 5, '56561': 4, '56904': 4, '56915': 6, '56966': 6}
+iters = {'56550': 5, '56561': 4, '56904': 4, '56915': 6, '56966': 6, '57321': 6}
 
 # Specify Butterworth filter cut-off frequency for each night
-bfreq = {'56550': 0.035, '56561': 0.04, '56904': 0.03, '56915': 0.025, '56966': 0.055}
+bfreq = {'56550': 0.035, '56561': 0.04, '56904': 0.03, '56915': 0.025, '56966': 0.055, '57321': 0.025}
 
 for night in nights:
 	# Read in data
